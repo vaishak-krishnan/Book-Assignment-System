@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const booksContainer = document.getElementById("books");
 
     // Fetch books from the server
-    fetch("fetch_books.php")
+    fetch("php/fetch_books.php")
         .then((response) => response.json())
         .then((books) => {
             books.forEach((book) => {
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const userName = prompt("Enter the name of the person to assign this book:");
 
                     if (userName) {
-                        fetch("assign_book.php", {
+                        fetch("php/assign_book.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/x-www-form-urlencoded",
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const bookId = this.dataset.id;
 
                     if (confirm("Are you sure you want to remove the assignment?")) {
-                        fetch("assign_book.php", {
+                        fetch("php/assign_book.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/x-www-form-urlencoded",
