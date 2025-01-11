@@ -145,12 +145,13 @@ INSERT INTO books (title, author, image_url) VALUES
 
 ## Screenshots
 
+## Screenshots
+
 ### Main Page (Manage Books)
-![Main Page](https://via.placeholder.com/800x400.png?text=Main+Page)
+![Main Page](screenshots/main_page.jpg)
 
 ### Assigned Books Page
-![Assigned Books](https://via.placeholder.com/800x400.png?text=Assigned+Books)
-
+![Assigned Books](screenshots/assigned_books.jpg)
 ---
 
 ## License
