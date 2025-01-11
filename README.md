@@ -175,8 +175,7 @@ Contributions are welcome! Please follow these steps:
 ## Acknowledgments
 
 - **Bootstrap**: For the responsive design.
-- **OpenAI's ChatGPT**: For project assistance.
-
+- **PHPMyAdmin**; For Database.
 ---
 
 ## Contact
