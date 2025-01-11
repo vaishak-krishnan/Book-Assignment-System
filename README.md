@@ -151,7 +151,7 @@ INSERT INTO books (title, author, image_url) VALUES
 ![Main Page](screenshots/main_page.jpg)
 
 ### Assigned Books Page
-![Assigned Books](screenshots/assigned_books.jpg)
+![Assigned Books](screenshots/Assigned_books.jpg)
 ---
 
 ## License
