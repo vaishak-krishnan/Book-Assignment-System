@@ -1,7 +1,7 @@
 <?php
 include 'db_config.php';
 
-$sql = "SELECT id, title, author, assigned_to, image_url FROM books";
+$sql = "SELECT id, title, author, image_url, assigned_to FROM books";
 $result = $conn->query($sql);
 
 $books = [];
@@ -13,5 +13,6 @@ if ($result->num_rows > 0) {
 }
 
 echo json_encode($books);
+
 $conn->close();
 ?>

@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assigned Books</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sort-indicator {
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -14,18 +24,16 @@
     </header>
 
     <main class="container mt-5">
-        <a href="index.html" class="btn btn-secondary mt-4">Back to Home</a>
-
         <h2 class="text-center mb-4">Assigned Books</h2>
         <div id="assigned-books" class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Book Title</th>
-                        <th>Author</th>
-                        <th>Assigned To</th>
-                        <th>Time of Issue</th>
+                        <th class="sortable" data-sort="title">Book Title <span class="sort-indicator">▲</span></th>
+                        <th class="sortable" data-sort="author">Author <span class="sort-indicator">▲</span></th>
+                        <th class="sortable" data-sort="assigned_to">Assigned To <span class="sort-indicator">▲</span></th>
+                        <th class="sortable" data-sort="time_of_issue">Time of Issue <span class="sort-indicator">▲</span></th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -34,57 +42,130 @@
                 </tbody>
             </table>
         </div>
+        <a href="index.html" class="btn btn-secondary mt-4">Back to Home</a>
     </main>
 
-  
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>&copy; 2025 Book Assignment System | Developed by Vaishak C Krishnan</p>
+    </footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const assignedBooksTable = document.getElementById("assigned-books-table");
+            const tableHeaders = document.querySelectorAll(".sortable");
+            let assignedBooks = [];
+            let currentSort = { field: null, order: "asc" };
 
             // Fetch assigned books
-            fetch("php/assigned_books.php")
-                .then(response => response.json())
-                .then(assignedBooks => {
-                    assignedBooks.forEach((book, index) => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${book.title}</td>
-                            <td>${book.author}</td>
-                            <td>${book.assigned_to}</td>
-                            <td>${book.time_of_issue ? new Date(book.time_of_issue).toLocaleString() : 'N/A'}</td>
-                            <td>
-                                <button class="btn btn-danger remove-assignment-btn" data-id="${book.id}">Remove</button>
-                            </td>
-                        `;
-                        assignedBooksTable.appendChild(row);
+            function fetchAssignedBooks() {
+                fetch("php/assigned_books.php")
+                    .then(response => response.json())
+                    .then(data => {
+                        assignedBooks = data;
+                        renderTable(assignedBooks);
                     });
+            }
 
-                    // Add event listeners for remove assignment buttons
-                    document.querySelectorAll(".remove-assignment-btn").forEach(button => {
-                        button.addEventListener("click", () => {
-                            const bookId = button.dataset.id;
+            // Render table rows
+            function renderTable(data) {
+                assignedBooksTable.innerHTML = "";
+                data.forEach((book, index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.assigned_to || "None"}</td>
+                        <td>${book.time_of_issue ? formatTime(book.time_of_issue) : "N/A"}</td>
+                        <td>
+                            <button class="btn btn-danger remove-assignment-btn" data-id="${book.id}">Remove Assignment</button>
+                        </td>
+                    `;
+                    assignedBooksTable.appendChild(row);
+                });
 
-                            if (confirm("Are you sure you want to remove this assignment?")) {
-                                fetch("php/assign_book.php", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/x-www-form-urlencoded",
-                                    },
-                                    body: `action=remove&book_id=${bookId}`,
-                                })
-                                    .then(response => response.json())
-                                    .then(result => {
-                                        alert(result.message);
-                                        if (result.status === "success") {
-                                            button.closest("tr").remove();
-                                        }
-                                    });
-                            }
-                        });
+                // Add remove assignment functionality
+                document.querySelectorAll(".remove-assignment-btn").forEach(button => {
+                    button.addEventListener("click", () => {
+                        const bookId = button.dataset.id;
+
+                        if (confirm("Are you sure you want to remove this assignment?")) {
+                            fetch("php/assign_book.php", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                                body: `action=remove&book_id=${bookId}`,
+                            })
+                                .then(response => response.json())
+                                .then(result => {
+                                    alert(result.message);
+                                    if (result.status === "success") fetchAssignedBooks();
+                                });
+                        }
                     });
                 });
+            }
+
+            // Format time for display
+            function formatTime(timeString) {
+                const options = {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    second: "numeric",
+                    hour12: true,
+                };
+                return new Date(timeString).toLocaleString("en-US", options);
+            }
+
+            // Sort data and re-render table
+            function sortData(field) {
+                const order = currentSort.field === field && currentSort.order === "asc" ? "desc" : "asc";
+                currentSort = { field, order };
+
+                const sortedBooks = [...assignedBooks].sort((a, b) => {
+                    let aValue = a[field] || "";
+                    let bValue = b[field] || "";
+
+                    if (field === "time_of_issue") {
+                        aValue = new Date(aValue || 0).getTime();
+                        bValue = new Date(bValue || 0).getTime();
+                    }
+
+                    if (order === "asc") {
+                        return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+                    } else {
+                        return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+                    }
+                });
+
+                renderTable(sortedBooks);
+                updateSortIndicators(field, order);
+            }
+
+            // Update sort indicators
+            function updateSortIndicators(field, order) {
+                tableHeaders.forEach(header => {
+                    const indicator = header.querySelector(".sort-indicator");
+                    if (header.dataset.sort === field) {
+                        indicator.textContent = order === "asc" ? "▲" : "▼";
+                    } else {
+                        indicator.textContent = "▲";
+                    }
+                });
+            }
+
+            // Add click event listeners for sorting
+            tableHeaders.forEach(header => {
+                header.addEventListener("click", () => {
+                    const sortField = header.dataset.sort;
+                    sortData(sortField);
+                });
+            });
+
+            // Initial fetch
+            fetchAssignedBooks();
         });
     </script>
 </body>

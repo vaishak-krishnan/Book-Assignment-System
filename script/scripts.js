@@ -178,3 +178,4 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initial render
     renderBooks();
 });
+
