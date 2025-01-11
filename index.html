@@ -15,15 +15,86 @@
         <p>Manage book assignments effortlessly</p>
     </header>
 
-    <!-- Main Content -->
     <main class="container mt-5">
         <h2 class="text-center mb-4">Available Books</h2>
-        <div id="books" class="row"></div>
+        <div class="d-flex justify-content-between">
+            <button id="add-book-btn" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookModal">Add Book</button>
+            <button id="view-assigned-books-btn" class="btn btn-info" onclick="location.href='assigned_books.html'">View Assigned Books</button>
+        </div>
+        <div id="books" class="row mt-4"></div>
     </main>
+    
+    
+    
+    <!-- Add Book Modal -->
+    <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBookModalLabel">Add New Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBookForm">
+                        <div class="mb-3">
+                            <label for="addBookTitle" class="form-label">Book Title</label>
+                            <input type="text" class="form-control" id="addBookTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addBookAuthor" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="addBookAuthor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addBookImage" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="addBookImage" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveAddBookBtn">Save Book</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Edit Book Modal -->
+    <div class="modal fade" id="editBookModal" tabindex="-1" aria-labelledby="editBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBookModalLabel">Edit Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editBookForm">
+                        <input type="hidden" id="editBookId">
+                        <div class="mb-3">
+                            <label for="editBookTitle" class="form-label">Book Title</label>
+                            <input type="text" class="form-control" id="editBookTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBookAuthor" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="editBookAuthor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBookImage" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="editBookImage" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveEditBookBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2025 Book Assignment System | Developed by Your Name</p>
+        <p>&copy; 2025 Book Assignment System | Developed by Vaishak Krishnan</p>
     </footer>
 
     <script src="script/scripts.js"></script>

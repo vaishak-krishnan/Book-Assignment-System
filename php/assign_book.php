@@ -7,10 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'assign') {
         $userName = $_POST['user_name'];
+        $timeOfIssue = date('Y-m-d H:i:s');
 
-        $sql = "UPDATE books SET assigned_to = ? WHERE id = ?";
+        $sql = "UPDATE books SET assigned_to = ?, time_of_issue = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("si", $userName, $bookId);
+        $stmt->bind_param("ssi", $userName, $timeOfIssue, $bookId);
 
         if ($stmt->execute()) {
             echo json_encode(["status" => "success", "message" => "Book assigned successfully"]);
@@ -18,14 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(["status" => "error", "message" => "Failed to assign book"]);
         }
     } elseif ($action === 'remove') {
-        $sql = "UPDATE books SET assigned_to = NULL WHERE id = ?";
+        $sql = "UPDATE books SET assigned_to = NULL, time_of_issue = NULL WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $bookId);
 
         if ($stmt->execute()) {
-            echo json_encode(["status" => "success", "message" => "Book assignment removed successfully"]);
+            echo json_encode(["status" => "success", "message" => "Assignment removed successfully"]);
         } else {
-            echo json_encode(["status" => "error", "message" => "Failed to remove book assignment"]);
+            echo json_encode(["status" => "error", "message" => "Failed to remove assignment"]);
         }
     }
 
